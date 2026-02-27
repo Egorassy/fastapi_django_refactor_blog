@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from typing import List
-from schemas.schemas import CategoryCreate, CategoryRead
+from ..schemas.schemas import CategoryCreate, CategoryRead
 from datetime import datetime
 
 router = APIRouter(prefix="/categories", tags=["categories"])

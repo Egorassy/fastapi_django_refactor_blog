@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from typing import List
-from schemas.schemas import PostCreate, PostRead
+from ..schemas.schemas import PostCreate, PostRead
 from datetime import datetime
 
 router = APIRouter(prefix="/posts", tags=["posts"])

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status, HTTPException
 
-from schemas.posts import PostRequestSchema, PostResponseSchema
+from ..schemas.posts import PostRequestSchema, PostResponseSchema
 
 
 router = APIRouter()
