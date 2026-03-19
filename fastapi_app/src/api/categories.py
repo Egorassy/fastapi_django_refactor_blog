@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from datetime import datetime
 from typing import List
-from schemas.categories import CategoryCreate, CategoryRead
+from ..schemas.categories import CategoryCreate, CategoryRead
 
 router = APIRouter(prefix="/categories")
 

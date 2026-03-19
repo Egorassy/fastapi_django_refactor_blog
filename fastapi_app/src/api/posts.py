@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from datetime import datetime
 from typing import List
-from schemas.posts import PostCreate, PostRead
+from ..schemas.posts import PostCreate, PostRead
 
 router = APIRouter(prefix="/posts")
 

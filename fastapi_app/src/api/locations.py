@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from datetime import datetime
 from typing import List
-from schemas.locations import LocationCreate, LocationRead
+from ..schemas.locations import LocationCreate, LocationRead
 
 router = APIRouter(prefix="/locations")
 

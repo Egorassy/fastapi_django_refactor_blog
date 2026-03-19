@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from datetime import datetime
 from typing import List
-from schemas.comments import CommentCreate, CommentRead
+from ..schemas.comments import CommentCreate, CommentRead
 
 router = APIRouter(prefix="/comments")
 
