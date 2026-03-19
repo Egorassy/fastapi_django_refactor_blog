@@ -1,21 +1,21 @@
 from fastapi import APIRouter
 from datetime import datetime
 from typing import List
-from schemas.posts import PostCreate, PostRead
+from schemas.comments import CommentCreate, CommentRead
 
-router = APIRouter(prefix="/posts")
+router = APIRouter(prefix="/comments")
 
 db = []
 counter = 1
 
 
-@router.get("/", response_model=List[PostRead])
+@router.get("/", response_model=List[CommentRead])
 def get_all():
     return db
 
 
-@router.post("/", response_model=PostRead)
-def create(item: PostCreate):
+@router.post("/", response_model=CommentRead)
+def create(item: CommentCreate):
     global counter
     new_item = {
         "id": counter,

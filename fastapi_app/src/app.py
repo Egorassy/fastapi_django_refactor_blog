@@ -3,6 +3,9 @@ from starlette.middleware.cors import CORSMiddleware
 
 from .api.categories import router as categories_router
 from .api.posts import router as posts_router
+from .api.locations import router as locations_router
+from .api.comments import router as comments_router
+
 
 def create_app() -> FastAPI:
     app = FastAPI(title="FastAPI Blog", root_path="/api/v1")
@@ -17,5 +20,7 @@ def create_app() -> FastAPI:
 
     app.include_router(categories_router)
     app.include_router(posts_router)
+    app.include_router(locations_router)
+    app.include_router(comments_router)
 
     return app
