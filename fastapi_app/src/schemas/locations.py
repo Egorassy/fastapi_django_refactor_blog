@@ -3,18 +3,16 @@ from datetime import datetime
 from typing import Optional
 
 
-class CategoryBase(BaseModel):
-    title: str
-    description: Optional[str] = None
-    slug: str
+class LocationBase(BaseModel):
+    name: str
     is_published: Optional[bool] = True
 
 
-class CategoryCreate(CategoryBase):
+class LocationCreate(LocationBase):
     pass
 
 
-class CategoryRead(CategoryBase):
+class LocationRead(LocationBase):
     id: int
     created_at: datetime
 
