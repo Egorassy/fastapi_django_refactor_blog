@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, Boolean, DateTime
 from sqlalchemy.orm import declarative_base
 
-Base = declarative_base()
+from .base import Base
 
 
 class Location(Base):

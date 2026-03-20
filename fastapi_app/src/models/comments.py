@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, Text, DateTime, ForeignKey
 from sqlalchemy.orm import declarative_base
 
-Base = declarative_base()
+from .base import Base
 
 
 class Comment(Base):
