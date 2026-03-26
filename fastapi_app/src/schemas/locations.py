@@ -1,11 +1,11 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+from typing import Annotated
 from datetime import datetime
-from typing import Optional
 
 
 class LocationBase(BaseModel):
-    name: str
-    is_published: Optional[bool] = True
+    name: Annotated[str, Field(max_length=256)]
+    is_published: bool = True
 
 
 class LocationCreate(LocationBase):

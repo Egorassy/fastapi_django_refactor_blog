@@ -1,10 +1,11 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+from typing import Annotated
 from datetime import datetime
 
 
 class CommentBase(BaseModel):
-    post_id: int
-    author_id: int
+    post_id: Annotated[int, Field(ge=1)]
+    author_id: Annotated[int, Field(ge=1)]
     text: str
 
 
