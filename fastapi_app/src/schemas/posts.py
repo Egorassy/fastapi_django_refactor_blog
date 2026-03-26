@@ -1,17 +1,17 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+from typing import Annotated, Optional
 from datetime import datetime
-from typing import Optional
 
 
 class PostBase(BaseModel):
-    title: str
+    title: Annotated[str, Field(max_length=256)]
     text: str
     pub_date: datetime
-    author_id: int
-    location_id: Optional[int] = None
-    category_id: Optional[int] = None
+    author_id: Annotated[int, Field(ge=1)]
+    location_id: Optional[Annotated[int, Field(ge=1)]] = None
+    category_id: Optional[Annotated[int, Field(ge=1)]] = None
     image: Optional[str] = None
-    is_published: Optional[bool] = True
+    is_published: Annotated[bool, Field(description="Опубликовано")] = True
 
 
 class PostCreate(PostBase):
@@ -23,4 +23,4 @@ class PostRead(PostBase):
     created_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
