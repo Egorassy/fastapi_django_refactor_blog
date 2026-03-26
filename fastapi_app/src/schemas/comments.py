@@ -6,7 +6,7 @@ from datetime import datetime
 class CommentBase(BaseModel):
     post_id: Annotated[int, Field(ge=1)]
     author_id: Annotated[int, Field(ge=1)]
-    text: str
+    text: Annotated[str, Field(min_length=1)]
 
 
 class CommentCreate(CommentBase):

@@ -7,7 +7,7 @@ class CategoryBase(BaseModel):
     title: Annotated[str, Field(max_length=256)]
     description: Optional[str] = None
     slug: Annotated[str, Field(pattern=r"^[a-zA-Z0-9_-]+$")]
-    is_published: bool = True
+    is_published: Annotated[bool, Field(description="Опубликовано")] = True
 
 
 class CategoryCreate(CategoryBase):

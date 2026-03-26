@@ -11,7 +11,7 @@ class PostBase(BaseModel):
     location_id: Optional[Annotated[int, Field(ge=1)]] = None
     category_id: Optional[Annotated[int, Field(ge=1)]] = None
     image: Optional[str] = None
-    is_published: bool = True
+    is_published: Annotated[bool, Field(description="Опубликовано")] = True
 
 
 class PostCreate(PostBase):
