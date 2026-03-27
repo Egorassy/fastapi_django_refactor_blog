@@ -8,8 +8,8 @@ class PostBase(BaseModel):
     text: str
     pub_date: datetime
     author_id: Annotated[int, Field(ge=1)]
-    location_id: Optional[Annotated[int, Field(ge=1)]] = None
-    category_id: Optional[Annotated[int, Field(ge=1)]] = None
+    location_id: Annotated[int | None, Field(ge=1)] = None
+    category_id: Annotated[int | None, Field(ge=1)] = None
     image: Optional[str] = None
     is_published: Annotated[bool, Field(description="Опубликовано")] = True
 
