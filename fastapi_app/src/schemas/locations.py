@@ -4,7 +4,7 @@ from datetime import datetime
 
 
 class LocationBase(BaseModel):
-    name: Annotated[str, Field(max_length=256)]
+    name: Annotated[str, Field(max_length=256, min_length=1)]
     is_published: Annotated[bool, Field(description="Опубликовано")] = True
 
 

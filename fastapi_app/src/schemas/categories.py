@@ -5,9 +5,18 @@ from datetime import datetime
 
 class CategoryBase(BaseModel):
     title: Annotated[str, Field(max_length=256)]
-    description: Optional[str] = None
+
+    description: Annotated[
+        str | None,
+        Field(max_length=500)
+    ] = None
+
     slug: Annotated[str, Field(pattern=r"^[a-zA-Z0-9_-]+$")]
-    is_published: Annotated[bool, Field(description="Опубликовано")] = True
+
+    is_published: Annotated[
+        bool,
+        Field(description="Опубликовано")
+    ] = True
 
 
 class CategoryCreate(CategoryBase):
