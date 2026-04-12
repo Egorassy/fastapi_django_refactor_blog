@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import Annotated, Optional
 from datetime import datetime
+from pydantic import field_validator
 
 
 class CategoryBase(BaseModel):
@@ -29,3 +30,9 @@ class CategoryRead(CategoryBase):
 
     class Config:
         from_attributes = True
+
+@field_validator("title")
+def title_not_empty(cls, v):
+    if not v.strip():
+        raise ValueError("Title cannot be empty")
+    return v
