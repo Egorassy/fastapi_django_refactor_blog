@@ -10,4 +10,10 @@ class EntityNotFoundError(UseCaseError):
 
 
 class EntityAlreadyExistsError(UseCaseError):
-    pass
+    def __init__(self, entity: str, field: str | None = None):
+        self.entity = entity
+        self.field = field
+        msg = f"{entity} already exists"
+        if field:
+            msg += f" (field: {field})"
+        super().__init__(msg)
