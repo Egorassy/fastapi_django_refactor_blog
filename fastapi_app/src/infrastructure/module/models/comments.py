@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Text, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, Text, DateTime, ForeignKey, func
 
 from ..base import Base
 
@@ -10,4 +10,4 @@ class Comment(Base):
     post_id = Column(Integer, ForeignKey("blog_post.id"))
     author_id = Column(Integer)
     text = Column(Text)
-    created_at = Column(DateTime)
+    created_at = Column(DateTime, server_default=func.now(), nullable=False)

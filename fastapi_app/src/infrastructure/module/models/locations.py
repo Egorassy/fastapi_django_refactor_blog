@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, func
 
 from ..base import Base
 
@@ -9,4 +9,4 @@ class Location(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(256))
     is_published = Column(Boolean, default=True)
-    created_at = Column(DateTime)
+    created_at = Column(DateTime, server_default=func.now(), nullable=False)

@@ -1,8 +1,8 @@
-"""init
+"""init clean
 
-Revision ID: 64fd4de6c8ef
+Revision ID: beb3322b395b
 Revises: 
-Create Date: 2026-03-29 15:23:35.860315
+Create Date: 2026-04-12 23:47:25.473124
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '64fd4de6c8ef'
+revision: str = 'beb3322b395b'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -27,7 +27,7 @@ def upgrade() -> None:
     sa.Column('description', sa.Text(), nullable=True),
     sa.Column('slug', sa.String(), nullable=True),
     sa.Column('is_published', sa.Boolean(), nullable=True),
-    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('slug')
     )
@@ -36,7 +36,7 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=256), nullable=True),
     sa.Column('is_published', sa.Boolean(), nullable=True),
-    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_blog_location_id'), 'blog_location', ['id'], unique=False)
@@ -50,7 +50,7 @@ def upgrade() -> None:
     sa.Column('category_id', sa.Integer(), nullable=True),
     sa.Column('image', sa.String(), nullable=True),
     sa.Column('is_published', sa.Boolean(), nullable=True),
-    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
     sa.ForeignKeyConstraint(['category_id'], ['blog_category.id'], ),
     sa.ForeignKeyConstraint(['location_id'], ['blog_location.id'], ),
     sa.PrimaryKeyConstraint('id')
@@ -61,7 +61,7 @@ def upgrade() -> None:
     sa.Column('post_id', sa.Integer(), nullable=True),
     sa.Column('author_id', sa.Integer(), nullable=True),
     sa.Column('text', sa.Text(), nullable=True),
-    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
     sa.ForeignKeyConstraint(['post_id'], ['blog_post.id'], ),
     sa.PrimaryKeyConstraint('id')
     )

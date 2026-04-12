@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime
+from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, func
 
 from ..base import Base
 
@@ -11,4 +11,4 @@ class Category(Base):
     description = Column(Text)
     slug = Column(String, unique=True)
     is_published = Column(Boolean, default=True)
-    created_at = Column(DateTime)
+    created_at = Column(DateTime, server_default=func.now(), nullable=False)
