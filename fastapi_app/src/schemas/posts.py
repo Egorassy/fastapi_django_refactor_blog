@@ -1,17 +1,33 @@
-from pydantic import BaseModel, Field
-from typing import Annotated, Optional
+from pydantic import BaseModel, Field, field_validator
+from typing import Annotated
 from datetime import datetime
 
 
 class PostBase(BaseModel):
-    title: Annotated[str, Field(max_length=256)]
-    text: str
+    title: Annotated[str, Field(max_length=256, min_length=1)]
+
+    text: Annotated[str, Field(min_length=1)]
+
     pub_date: datetime
+
     author_id: Annotated[int, Field(ge=1)]
+
     location_id: Annotated[int | None, Field(ge=1)] = None
+
     category_id: Annotated[int | None, Field(ge=1)] = None
-    image: Optional[str] = None
-    is_published: Annotated[bool, Field(description="Опубликовано")] = True
+
+    image: str | None = None
+
+    is_published: Annotated[
+        bool,
+        Field(description="Опубликовано")
+    ] = True
+
+    @field_validator("text")
+    def text_not_empty(cls, v):
+        if not v.strip():
+            raise ValueError("Text cannot be empty")
+        return v
 
 
 class PostCreate(PostBase):

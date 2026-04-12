@@ -1,57 +1,50 @@
-from fastapi import APIRouter, HTTPException
-from datetime import datetime
-from typing import List
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+
 from ..schemas.posts import PostCreate, PostRead
+from .dependencies import get_db
+
+from use_case.posts import PostUseCase
+from use_case.exceptions import EntityNotFoundError, EntityAlreadyExistsError
 
 router = APIRouter(prefix="/posts")
 
-db = []
-counter = 1
+use_case = PostUseCase()
 
 
-@router.get("/", response_model=List[PostRead])
-def get_all():
-    return db
+@router.get("/", response_model=list[PostRead])
+def get_all(db: Session = Depends(get_db)):
+    return use_case.get_all(db)
 
 
 @router.get("/{item_id}", response_model=PostRead)
-def get_one(item_id: int):
-    if item_id < 1 or item_id > len(db):
-        raise HTTPException(status_code=404, detail="Post not found")
-    return db[item_id - 1]
+def get_one(item_id: int, db: Session = Depends(get_db)):
+    try:
+        return use_case.get_one(db, item_id)
+    except EntityNotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @router.post("/", response_model=PostRead)
-def create(item: PostCreate):
-    global counter
-    new_item = {
-        "id": counter,
-        "created_at": datetime.now(),
-        **item.dict()
-    }
-    db.append(new_item)
-    counter += 1
-    return new_item
+def create(item: PostCreate, db: Session = Depends(get_db)):
+    try:
+        return use_case.create(db, item.dict())
+    except EntityAlreadyExistsError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @router.put("/{item_id}", response_model=PostRead)
-def update(item_id: int, item: PostCreate):
-    if item_id < 1 or item_id > len(db):
-        raise HTTPException(status_code=404, detail="Post not found")
-
-    updated = {
-        "id": item_id,
-        "created_at": db[item_id - 1]["created_at"],
-        **item.dict()
-    }
-    db[item_id - 1] = updated
-    return updated
+def update(item_id: int, item: PostCreate, db: Session = Depends(get_db)):
+    try:
+        return use_case.update(db, item_id, item.dict())
+    except EntityNotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @router.delete("/{item_id}")
-def delete(item_id: int):
-    if item_id < 1 or item_id > len(db):
-        raise HTTPException(status_code=404, detail="Post not found")
-
-    db.pop(item_id - 1)
-    return {"ok": True}
+def delete(item_id: int, db: Session = Depends(get_db)):
+    try:
+        use_case.delete(db, item_id)
+        return {"ok": True}
+    except EntityNotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e))

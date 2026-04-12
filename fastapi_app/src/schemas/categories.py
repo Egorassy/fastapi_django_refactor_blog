@@ -1,23 +1,37 @@
-from pydantic import BaseModel, Field
-from typing import Annotated, Optional
+from pydantic import BaseModel, Field, field_validator
+from typing import Annotated
 from datetime import datetime
-from pydantic import field_validator
 
 
 class CategoryBase(BaseModel):
-    title: Annotated[str, Field(max_length=256)]
+    title: Annotated[str, Field(max_length=256, min_length=1)]
 
     description: Annotated[
         str | None,
         Field(max_length=500)
     ] = None
 
-    slug: Annotated[str, Field(pattern=r"^[a-zA-Z0-9_-]+$")]
+    slug: Annotated[
+        str,
+        Field(pattern=r"^[a-z0-9_-]+$")
+    ]
 
     is_published: Annotated[
         bool,
         Field(description="Опубликовано")
     ] = True
+
+    @field_validator("title")
+    def title_not_empty(cls, v):
+        if not v.strip():
+            raise ValueError("Title cannot be empty")
+        return v
+
+    @field_validator("slug")
+    def slug_lowercase(cls, v):
+        if v != v.lower():
+            raise ValueError("Slug must be lowercase")
+        return v
 
 
 class CategoryCreate(CategoryBase):
@@ -30,9 +44,3 @@ class CategoryRead(CategoryBase):
 
     class Config:
         from_attributes = True
-
-@field_validator("title")
-def title_not_empty(cls, v):
-    if not v.strip():
-        raise ValueError("Title cannot be empty")
-    return v
