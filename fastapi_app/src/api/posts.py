@@ -5,7 +5,7 @@ from ..schemas.posts import PostCreate, PostRead
 from .dependencies import get_db
 
 from ..use_case.posts import PostUseCase
-from ..use_case.exceptions import EntityNotFoundError, EntityAlreadyExistsError
+from src.core.exceptions.http import NotFoundError, ConflictError
 
 router = APIRouter(prefix="/posts")
 
@@ -21,7 +21,7 @@ def get_all(db: Session = Depends(get_db)):
 def get_one(item_id: int, db: Session = Depends(get_db)):
     try:
         return use_case.get_one(db, item_id)
-    except EntityNotFoundError as e:
+    except NotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
 
 
@@ -29,7 +29,7 @@ def get_one(item_id: int, db: Session = Depends(get_db)):
 def create(item: PostCreate, db: Session = Depends(get_db)):
     try:
         return use_case.create(db, item.dict())
-    except EntityAlreadyExistsError as e:
+    except ConflictError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 
@@ -37,7 +37,7 @@ def create(item: PostCreate, db: Session = Depends(get_db)):
 def update(item_id: int, item: PostCreate, db: Session = Depends(get_db)):
     try:
         return use_case.update(db, item_id, item.dict())
-    except EntityNotFoundError as e:
+    except NotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
 
 
@@ -46,5 +46,5 @@ def delete(item_id: int, db: Session = Depends(get_db)):
     try:
         use_case.delete(db, item_id)
         return {"ok": True}
-    except EntityNotFoundError as e:
+    except NotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
