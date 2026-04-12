@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime
 
-from infrastructure.module.base import Base
+from ..base import Base
 
 
 class Category(Base):

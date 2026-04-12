@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from infrastructure.module.models.locations import Location
+from ..module.models.locations import Location
 
 
 class LocationRepository:

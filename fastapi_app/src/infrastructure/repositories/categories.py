@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
-from infrastructure.module.models.categories import Category
-from infrastructure.module.exceptions import (
+from ..module.models.categories import Category
+from ..module.exceptions import (
     DatabaseError,
     IntegrityDatabaseError,
     NotFoundError,

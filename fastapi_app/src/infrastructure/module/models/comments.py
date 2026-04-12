@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, Text, DateTime, ForeignKey
 
-from infrastructure.module.base import Base
+from ..base import Base
 
 
 class Comment(Base):

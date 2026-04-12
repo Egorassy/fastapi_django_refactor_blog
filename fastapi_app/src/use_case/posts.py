@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 
 from ..infrastructure.repositories.posts import PostRepository
 from ..infrastructure.module.exceptions import NotFoundError, IntegrityDatabaseError
-from use_case.exceptions import EntityNotFoundError, EntityAlreadyExistsError
+from .exceptions import EntityNotFoundError, EntityAlreadyExistsError
 
 
 class PostUseCase:

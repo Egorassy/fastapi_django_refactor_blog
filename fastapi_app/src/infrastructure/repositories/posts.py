@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from infrastructure.module.models.posts import Post
+from ..module.models.posts import Post
 
 
 class PostRepository:

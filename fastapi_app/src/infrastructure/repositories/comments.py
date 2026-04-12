@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from infrastructure.module.models import Comment
+from ..module.models import Comment
 
 
 class CommentRepository:
