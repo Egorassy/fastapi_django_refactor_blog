@@ -1,4 +1,4 @@
-from infrastructure.module.db import SessionLocal
+from ..infrastructure.module.db import SessionLocal
 
 def get_db():
     db = SessionLocal()

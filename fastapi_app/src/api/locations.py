@@ -4,8 +4,8 @@ from sqlalchemy.orm import Session
 from ..schemas.locations import LocationCreate, LocationRead
 from .dependencies import get_db
 
-from use_case.locations import LocationUseCase
-from use_case.exceptions import EntityNotFoundError
+from ..use_case.locations import LocationUseCase
+from ..use_case.exceptions import EntityNotFoundError
 
 router = APIRouter(prefix="/locations")
 

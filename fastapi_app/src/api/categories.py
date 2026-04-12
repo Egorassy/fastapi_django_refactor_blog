@@ -4,8 +4,8 @@ from sqlalchemy.orm import Session
 from ..schemas.categories import CategoryCreate, CategoryRead
 from .dependencies import get_db
 
-from use_case.categories import CategoryUseCase
-from use_case.exceptions import EntityNotFoundError, EntityAlreadyExistsError
+from ..use_case.categories import CategoryUseCase
+from ..use_case.exceptions import EntityNotFoundError, EntityAlreadyExistsError
 
 router = APIRouter(prefix="/categories")
 

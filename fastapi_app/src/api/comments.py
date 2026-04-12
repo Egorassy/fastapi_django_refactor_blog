@@ -4,8 +4,8 @@ from sqlalchemy.orm import Session
 from ..schemas.comments import CommentCreate, CommentRead
 from .dependencies import get_db
 
-from use_case.comments import CommentUseCase
-from use_case.exceptions import EntityNotFoundError
+from ..use_case.comments import CommentUseCase
+from ..use_case.exceptions import EntityNotFoundError
 
 router = APIRouter(prefix="/comments")
 

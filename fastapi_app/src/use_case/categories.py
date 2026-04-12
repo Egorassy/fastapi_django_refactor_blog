@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
-from infrastructure.repositories.categories import CategoryRepository
-from infrastructure.module.exceptions import NotFoundError, IntegrityDatabaseError
+from ..infrastructure.repositories.categories import CategoryRepository
+from ..infrastructure.module.exceptions import NotFoundError, IntegrityDatabaseError
 from use_case.exceptions import EntityNotFoundError, EntityAlreadyExistsError
 
 

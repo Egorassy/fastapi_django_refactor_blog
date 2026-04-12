@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
-from infrastructure.repositories.comments import CommentRepository
-from infrastructure.module.exceptions import NotFoundError
+from ..infrastructure.repositories.comments import CommentRepository
+from ..infrastructure.module.exceptions import NotFoundError
 from use_case.exceptions import EntityNotFoundError
 
 
