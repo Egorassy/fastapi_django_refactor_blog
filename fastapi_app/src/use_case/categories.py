@@ -1,15 +1,8 @@
 from sqlalchemy.orm import Session
 
 from infrastructure.repositories.categories import CategoryRepository
-from infrastructure.module.exceptions import (
-    NotFoundError,
-    IntegrityDatabaseError,
-)
-
-from use_case.exceptions import (
-    EntityNotFoundError,
-    EntityAlreadyExistsError,
-)
+from infrastructure.module.exceptions import NotFoundError, IntegrityDatabaseError
+from use_case.exceptions import EntityNotFoundError, EntityAlreadyExistsError
 
 
 class CategoryUseCase:
@@ -30,7 +23,7 @@ class CategoryUseCase:
         try:
             return self.repo.create(db, data)
         except IntegrityDatabaseError:
-            raise EntityAlreadyExistsError()
+            raise EntityAlreadyExistsError("Category")
 
     def update(self, db: Session, item_id: int, data: dict):
         try:
