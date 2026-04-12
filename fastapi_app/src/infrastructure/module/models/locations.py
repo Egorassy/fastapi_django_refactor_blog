@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Boolean, DateTime
 
-from .base import Base
+from infrastructure.module.base import Base
 
 
 class Location(Base):

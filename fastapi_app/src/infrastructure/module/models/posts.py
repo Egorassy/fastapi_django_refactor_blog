@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, ForeignKey
 
-from .base import Base
+from infrastructure.module.base import Base
 
 
 class Post(Base):

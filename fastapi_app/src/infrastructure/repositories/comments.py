@@ -1,17 +1,17 @@
 from sqlalchemy.orm import Session
-from ..models.categories import Category
+from infrastructure.module.models import Comment
 
 
-class CategoryRepository:
+class CommentRepository:
 
     def get_all(self, db: Session):
-        return db.query(Category).all()
+        return db.query(Comment).all()
 
     def get_by_id(self, db: Session, item_id: int):
-        return db.query(Category).filter(Category.id == item_id).first()
+        return db.query(Comment).filter(Comment.id == item_id).first()
 
     def create(self, db: Session, data: dict):
-        obj = Category(**data)
+        obj = Comment(**data)
         db.add(obj)
         db.commit()
         db.refresh(obj)
