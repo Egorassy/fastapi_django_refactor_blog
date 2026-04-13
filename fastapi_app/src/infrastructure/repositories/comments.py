@@ -1,5 +1,12 @@
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
+
 from ..module.models import Comment
+from ..module.exceptions import (
+    NotFoundError,
+    DatabaseError,
+    IntegrityDatabaseError,
+)
 
 
 class CommentRepository:
@@ -8,24 +15,53 @@ class CommentRepository:
         return db.query(Comment).all()
 
     def get_by_id(self, db: Session, item_id: int):
-        return db.query(Comment).filter(Comment.id == item_id).first()
+        obj = db.query(Comment).filter(Comment.id == item_id).first()
+        if not obj:
+            raise NotFoundError("Comment", item_id)
+        return obj
 
     def create(self, db: Session, data: dict):
-        obj = Comment(**data)
-        db.add(obj)
-        db.commit()
-        db.refresh(obj)
-        return obj
+        try:
+            obj = Comment(**data)
+            db.add(obj)
+            db.commit()
+            db.refresh(obj)
+            return obj
+
+        except IntegrityError:
+            db.rollback()
+            raise IntegrityDatabaseError()
+
+        except SQLAlchemyError:
+            db.rollback()
+            raise DatabaseError()
 
     def update(self, db: Session, item_id: int, data: dict):
         obj = self.get_by_id(db, item_id)
-        for key, value in data.items():
-            setattr(obj, key, value)
-        db.commit()
-        db.refresh(obj)
-        return obj
+
+        try:
+            for key, value in data.items():
+                setattr(obj, key, value)
+
+            db.commit()
+            db.refresh(obj)
+            return obj
+
+        except IntegrityError:
+            db.rollback()
+            raise IntegrityDatabaseError()
+
+        except SQLAlchemyError:
+            db.rollback()
+            raise DatabaseError()
 
     def delete(self, db: Session, item_id: int):
         obj = self.get_by_id(db, item_id)
-        db.delete(obj)
-        db.commit()
+
+        try:
+            db.delete(obj)
+            db.commit()
+
+        except SQLAlchemyError:
+            db.rollback()
+            raise DatabaseError()

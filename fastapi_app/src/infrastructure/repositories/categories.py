@@ -17,7 +17,7 @@ class CategoryRepository:
     def get_by_id(self, db: Session, item_id: int):
         obj = db.query(Category).filter(Category.id == item_id).first()
         if not obj:
-            raise NotFoundError()
+            raise NotFoundError("Category", item_id)
         return obj
 
     def create(self, db: Session, data: dict):
