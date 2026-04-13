@@ -1,11 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from ..schemas.posts import PostCreate, PostRead
 from .dependencies import get_db
-
 from ..use_case.posts import PostUseCase
-from src.core.exceptions.http import NotFoundError, ConflictError
 
 router = APIRouter(prefix="/posts")
 
@@ -19,32 +17,20 @@ def get_all(db: Session = Depends(get_db)):
 
 @router.get("/{item_id}", response_model=PostRead)
 def get_one(item_id: int, db: Session = Depends(get_db)):
-    try:
-        return use_case.get_one(db, item_id)
-    except NotFoundError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+    return use_case.get_one(db, item_id)
 
 
 @router.post("/", response_model=PostRead)
 def create(item: PostCreate, db: Session = Depends(get_db)):
-    try:
-        return use_case.create(db, item.dict())
-    except ConflictError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    return use_case.create(db, item.dict())
 
 
 @router.put("/{item_id}", response_model=PostRead)
 def update(item_id: int, item: PostCreate, db: Session = Depends(get_db)):
-    try:
-        return use_case.update(db, item_id, item.dict())
-    except NotFoundError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+    return use_case.update(db, item_id, item.dict())
 
 
 @router.delete("/{item_id}")
 def delete(item_id: int, db: Session = Depends(get_db)):
-    try:
-        use_case.delete(db, item_id)
-        return {"ok": True}
-    except NotFoundError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+    use_case.delete(db, item_id)
+    return {"ok": True}
