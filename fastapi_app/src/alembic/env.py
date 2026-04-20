@@ -25,7 +25,6 @@ if config.config_file_name is not None:
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 from infrastructure.module.base import Base
-from infrastructure.module.models import categories, posts, comments, locations
 
 target_metadata = Base.metadata
 

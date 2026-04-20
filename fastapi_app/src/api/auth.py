@@ -12,6 +12,13 @@ use_case = AuthUseCase()
 
 
 @router.post("/login", response_model=Token)
-def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+def login(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db: Session = Depends(get_db)
+):
     token = use_case.login(db, form_data.username, form_data.password)
-    return {"access_token": token}
+
+    return {
+        "access_token": token,
+        "token_type": "bearer"
+    }
