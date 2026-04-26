@@ -6,7 +6,6 @@ from ..module.exceptions import DatabaseError, IntegrityDatabaseError, NotFoundE
 
 
 class UserRepository:
-
     def get_by_username(self, db: Session, username: str):
         return db.query(User).filter(User.username == username).first()
 
@@ -23,11 +22,9 @@ class UserRepository:
             db.commit()
             db.refresh(obj)
             return obj
-
         except IntegrityError:
             db.rollback()
             raise IntegrityDatabaseError()
-
         except SQLAlchemyError:
             db.rollback()
             raise DatabaseError()
