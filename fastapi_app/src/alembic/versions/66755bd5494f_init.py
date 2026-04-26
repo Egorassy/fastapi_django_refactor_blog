@@ -1,8 +1,8 @@
-"""init clean
+"""init
 
-Revision ID: beb3322b395b
+Revision ID: 66755bd5494f
 Revises: 
-Create Date: 2026-04-12 23:47:25.473124
+Create Date: 2026-04-26 14:15:14.210229
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'beb3322b395b'
+revision: str = '66755bd5494f'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -40,6 +40,15 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_blog_location_id'), 'blog_location', ['id'], unique=False)
+    op.create_table('users',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('username', sa.String(), nullable=False),
+    sa.Column('hashed_password', sa.String(), nullable=False),
+    sa.Column('is_active', sa.Boolean(), nullable=True),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('username')
+    )
+    op.create_index(op.f('ix_users_id'), 'users', ['id'], unique=False)
     op.create_table('blog_post',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(length=256), nullable=True),
@@ -76,6 +85,8 @@ def downgrade() -> None:
     op.drop_table('blog_comment')
     op.drop_index(op.f('ix_blog_post_id'), table_name='blog_post')
     op.drop_table('blog_post')
+    op.drop_index(op.f('ix_users_id'), table_name='users')
+    op.drop_table('users')
     op.drop_index(op.f('ix_blog_location_id'), table_name='blog_location')
     op.drop_table('blog_location')
     op.drop_index(op.f('ix_blog_category_id'), table_name='blog_category')
