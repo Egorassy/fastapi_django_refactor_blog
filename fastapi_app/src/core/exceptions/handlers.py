@@ -1,7 +1,13 @@
 from fastapi import Request, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
-from .http import AppException, NotFoundError, BadRequestError, ConflictError
+from .http import (
+    AppException,
+    NotFoundError,
+    BadRequestError,
+    ConflictError,
+    UnauthorizedError,
+)
 
 
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
@@ -63,6 +69,7 @@ async def app_exception_handler(request: Request, exc: AppException):
         NotFoundError: 404,
         BadRequestError: 400,
         ConflictError: 409,
+        UnauthorizedError: 401,
     }
 
     status_code = status_map.get(type(exc), 500)
