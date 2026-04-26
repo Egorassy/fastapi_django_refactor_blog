@@ -25,7 +25,10 @@ def create(
     db: Session = Depends(get_db),
     user = Depends(get_current_user)
 ):
-    return use_case.create(db, item.dict())
+    data = item.dict()
+    data["author_id"] = user.id
+
+    return use_case.create(db, data)
 
 
 @router.put("/{item_id}", response_model=PostRead)
@@ -35,7 +38,7 @@ def update(
     db: Session = Depends(get_db),
     user = Depends(get_current_user)
 ):
-    return use_case.update(db, item_id, item.dict())
+    return use_case.update(db, item_id, item.dict(), user.id)
 
 
 @router.delete("/{item_id}")
@@ -44,5 +47,5 @@ def delete(
     db: Session = Depends(get_db),
     user = Depends(get_current_user)
 ):
-    use_case.delete(db, item_id)
+    use_case.delete(db, item_id, user.id)
     return {"ok": True}
