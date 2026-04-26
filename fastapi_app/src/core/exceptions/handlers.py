@@ -7,6 +7,7 @@ from .http import (
     BadRequestError,
     ConflictError,
     UnauthorizedError,
+    ForbiddenError
 )
 
 
@@ -70,6 +71,7 @@ async def app_exception_handler(request: Request, exc: AppException):
         BadRequestError: 400,
         ConflictError: 409,
         UnauthorizedError: 401,
+        ForbiddenError: 403,
     }
 
     status_code = status_map.get(type(exc), 500)
