@@ -1,8 +1,16 @@
+<<<<<<<< HEAD:fastapi_app/src/alembic/versions/a40ac7669b5f_postgresql_init.py
 """PostgreSQL init
 
 Revision ID: a40ac7669b5f
 Revises: 
 Create Date: 2026-04-27 15:48:42.505581
+========
+"""Added users table
+
+Revision ID: b10d694c2e70
+Revises: 
+Create Date: 2026-04-28 00:13:05.943859
+>>>>>>>> task-5:fastapi_app/src/alembic/versions/b10d694c2e70_added_users_table.py
 
 """
 from typing import Sequence, Union
@@ -12,7 +20,11 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
+<<<<<<<< HEAD:fastapi_app/src/alembic/versions/a40ac7669b5f_postgresql_init.py
 revision: str = 'a40ac7669b5f'
+========
+revision: str = 'b10d694c2e70'
+>>>>>>>> task-5:fastapi_app/src/alembic/versions/b10d694c2e70_added_users_table.py
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None

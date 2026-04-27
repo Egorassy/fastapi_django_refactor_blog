@@ -6,6 +6,9 @@ from ..module.exceptions import DatabaseError, IntegrityDatabaseError, NotFoundE
 
 
 class UserRepository:
+    def get_all(self, db: Session):
+        return db.query(User).all()
+
     def get_by_username(self, db: Session, username: str):
         return db.query(User).filter(User.username == username).first()
 
