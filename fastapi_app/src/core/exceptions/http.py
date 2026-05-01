@@ -2,6 +2,7 @@ class AppException(Exception):
     def __init__(self, message: str, code: str = "error"):
         self.message = message
         self.code = code
+        super().__init__(message)
 
 
 class NotFoundError(AppException):

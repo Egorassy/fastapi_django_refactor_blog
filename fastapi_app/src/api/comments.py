@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..schemas.comments import CommentCreate, CommentRead
 from .dependencies import get_db, get_current_user
@@ -10,42 +10,41 @@ use_case = CommentUseCase()
 
 
 @router.get("/", response_model=list[CommentRead])
-def get_all(db: Session = Depends(get_db)):
-    return use_case.get_all(db)
+async def get_all(db: AsyncSession = Depends(get_db)):
+    return await use_case.get_all(db)
 
 
 @router.get("/{item_id}", response_model=CommentRead)
-def get_one(item_id: int, db: Session = Depends(get_db)):
-    return use_case.get_one(db, item_id)
+async def get_one(item_id: int, db: AsyncSession = Depends(get_db)):
+    return await use_case.get_one(db, item_id)
 
 
 @router.post("/", response_model=CommentRead)
-def create(
+async def create(
     item: CommentCreate,
-    db: Session = Depends(get_db),
-    user = Depends(get_current_user)
+    db: AsyncSession = Depends(get_db),
+    user=Depends(get_current_user),
 ):
     data = item.dict()
     data["author_id"] = user.id
-
-    return use_case.create(db, data)
+    return await use_case.create(db, data)
 
 
 @router.put("/{item_id}", response_model=CommentRead)
-def update(
+async def update(
     item_id: int,
     item: CommentCreate,
-    db: Session = Depends(get_db),
-    user = Depends(get_current_user)
+    db: AsyncSession = Depends(get_db),
+    user=Depends(get_current_user),
 ):
-    return use_case.update(db, item_id, item.dict(), user.id)
+    return await use_case.update(db, item_id, item.dict(), user.id)
 
 
 @router.delete("/{item_id}")
-def delete(
+async def delete(
     item_id: int,
-    db: Session = Depends(get_db),
-    user = Depends(get_current_user)
+    db: AsyncSession = Depends(get_db),
+    user=Depends(get_current_user),
 ):
-    use_case.delete(db, item_id, user.id)
+    await use_case.delete(db, item_id, user.id)
     return {"ok": True}

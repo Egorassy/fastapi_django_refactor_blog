@@ -11,9 +11,11 @@ from ..infrastructure.repositories.users import UserRepository
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
+
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
     async with AsyncSessionLocal() as session:
         yield session
+
 
 async def get_current_user(
     token: str = Depends(oauth2_scheme),
