@@ -1,33 +1,36 @@
-from sqlalchemy.orm import Session
+from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..module.models.users import User
 from ..module.exceptions import DatabaseError, IntegrityDatabaseError, NotFoundError
+from ..module.models.users import User
 
 
 class UserRepository:
-    def get_all(self, db: Session):
-        return db.query(User).all()
+    async def get_all(self, db: AsyncSession):
+        result = await db.execute(select(User))
+        return result.scalars().all()
 
-    def get_by_username(self, db: Session, username: str):
-        return db.query(User).filter(User.username == username).first()
+    async def get_by_username(self, db: AsyncSession, username: str):
+        result = await db.execute(select(User).where(User.username == username))
+        return result.scalar_one_or_none()
 
-    def get_by_id(self, db: Session, user_id: int):
-        obj = db.query(User).filter(User.id == user_id).first()
+    async def get_by_id(self, db: AsyncSession, user_id: int):
+        obj = await db.get(User, user_id)
         if not obj:
             raise NotFoundError("User", user_id)
         return obj
 
-    def create(self, db: Session, data: dict):
+    async def create(self, db: AsyncSession, data: dict):
         try:
             obj = User(**data)
             db.add(obj)
-            db.commit()
-            db.refresh(obj)
+            await db.commit()
+            await db.refresh(obj)
             return obj
         except IntegrityError:
-            db.rollback()
+            await db.rollback()
             raise IntegrityDatabaseError()
         except SQLAlchemyError:
-            db.rollback()
+            await db.rollback()
             raise DatabaseError()

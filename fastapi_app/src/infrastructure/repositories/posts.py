@@ -1,67 +1,62 @@
-from sqlalchemy.orm import Session
+from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
+from sqlalchemy.ext.asyncio import AsyncSession
 
+from ..module.exceptions import DatabaseError, IntegrityDatabaseError, NotFoundError
 from ..module.models.posts import Post
-from ..module.exceptions import (
-    NotFoundError,
-    DatabaseError,
-    IntegrityDatabaseError,
-)
 
 
 class PostRepository:
+    async def get_all(self, db: AsyncSession):
+        result = await db.execute(select(Post))
+        return result.scalars().all()
 
-    def get_all(self, db: Session):
-        return db.query(Post).all()
-
-    def get_by_id(self, db: Session, item_id: int):
-        obj = db.query(Post).filter(Post.id == item_id).first()
+    async def get_by_id(self, db: AsyncSession, item_id: int):
+        obj = await db.get(Post, item_id)
         if not obj:
             raise NotFoundError("Post", item_id)
         return obj
 
-    def create(self, db: Session, data: dict):
+    async def create(self, db: AsyncSession, data: dict):
         try:
             obj = Post(**data)
             db.add(obj)
-            db.commit()
-            db.refresh(obj)
+            await db.commit()
+            await db.refresh(obj)
             return obj
-
         except IntegrityError:
-            db.rollback()
+            await db.rollback()
             raise IntegrityDatabaseError()
-
         except SQLAlchemyError:
-            db.rollback()
+            await db.rollback()
             raise DatabaseError()
 
-    def update(self, db: Session, item_id: int, data: dict):
-        obj = self.get_by_id(db, item_id)
+    async def update(self, db: AsyncSession, item_id: int, data: dict):
+        obj = await self.get_by_id(db, item_id)
 
         try:
             for key, value in data.items():
                 setattr(obj, key, value)
 
-            db.commit()
-            db.refresh(obj)
+            await db.commit()
+            await db.refresh(obj)
             return obj
-
         except IntegrityError:
-            db.rollback()
+            await db.rollback()
             raise IntegrityDatabaseError()
-
         except SQLAlchemyError:
-            db.rollback()
+            await db.rollback()
             raise DatabaseError()
 
-    def delete(self, db: Session, item_id: int):
-        obj = self.get_by_id(db, item_id)
+    async def delete(self, db: AsyncSession, item_id: int):
+        obj = await self.get_by_id(db, item_id)
 
         try:
-            db.delete(obj)
-            db.commit()
-
+            await db.delete(obj)
+            await db.commit()
+        except IntegrityError:
+            await db.rollback()
+            raise IntegrityDatabaseError()
         except SQLAlchemyError:
-            db.rollback()
+            await db.rollback()
             raise DatabaseError()

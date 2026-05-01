@@ -1,4 +1,7 @@
-from sqlalchemy import Column, Integer, Text, DateTime, ForeignKey, func
+from datetime import datetime
+
+from sqlalchemy import DateTime, ForeignKey, Integer, Text, func
+from sqlalchemy.orm import Mapped, mapped_column
 
 from ..base import Base
 
@@ -6,8 +9,8 @@ from ..base import Base
 class Comment(Base):
     __tablename__ = "blog_comment"
 
-    id = Column(Integer, primary_key=True, index=True)
-    post_id = Column(Integer, ForeignKey("blog_post.id"))
-    author_id = Column(Integer)
-    text = Column(Text)
-    created_at = Column(DateTime, server_default=func.now(), nullable=False)
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    post_id: Mapped[int] = mapped_column(Integer, ForeignKey("blog_post.id"), nullable=False)
+    author_id: Mapped[int] = mapped_column(Integer, nullable=False)
+    text: Mapped[str] = mapped_column(Text, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), nullable=False)
