@@ -1,10 +1,11 @@
 # fastapi_django_refactor_example
 
-# как запустить
- - создайте виртуальное окружение (venv) python (не ниже 3.11)
- - в терминале пропишите
-   - pip install fastapi
-   - pip install uvicorn
- - нажмите правой кнопкой на папку `src`
-   - выберете `Mark Directory as` -> `Source Root`
- - запустите файл main.py
+# Как запустить
+### 1. Перейдите в папку проекта
+```cd fastapi_django_refactor_blog/fastapi_app```
+### 2. Создайте файл .env
+Скопируйте пример:
+```cp .env.example .env```. При необходимости измените значения в файле на актуальные.
+### 3. Запустите проект
+```docker compose up --build```.
+API будет доступен в http://localhost:8000, а Swagger в http://localhost:8000/docs.
