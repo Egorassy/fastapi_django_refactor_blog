@@ -5,8 +5,6 @@ from datetime import datetime
 
 class CommentBase(BaseModel):
     post_id: Annotated[int, Field(ge=1)]
-    author_id: Annotated[int, Field(ge=1)]
-
     text: Annotated[str, Field(min_length=1)]
 
     @field_validator("text")
@@ -21,6 +19,7 @@ class CommentCreate(CommentBase):
 
 
 class CommentRead(CommentBase):
+    author_id: int
     id: int
     created_at: datetime
 
