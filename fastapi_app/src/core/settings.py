@@ -8,7 +8,7 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    app_name: str = "FastAPI Blog"
+    app_name: str = "Blogicum"
     database_url: str
 
     postgres_user: str = "postgres"
