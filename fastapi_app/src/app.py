@@ -1,26 +1,31 @@
 from pathlib import Path
 
 from fastapi import FastAPI
+from fastapi.exceptions import RequestValidationError
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.cors import CORSMiddleware
-from fastapi.exceptions import RequestValidationError
 
 from src.core.exceptions.handlers import (
-    validation_exception_handler,
     app_exception_handler,
+    validation_exception_handler,
 )
 from src.core.exceptions.http import AppException
+from src.core.logging import setup_logging
+from src.core.middleware import setup_middlewares
+from src.core.settings import settings
 
-from .api.categories import router as categories_router
-from .api.posts import router as posts_router
-from .api.locations import router as locations_router
-from .api.comments import router as comments_router
 from .api.auth import router as auth_router
+from .api.categories import router as categories_router
+from .api.comments import router as comments_router
+from .api.locations import router as locations_router
+from .api.posts import router as posts_router
 from .api.users import router as users_router
 
 
 def create_app() -> FastAPI:
-    app = FastAPI(title="FastAPI Blog", root_path="/api/v1")
+    setup_logging()
+
+    app = FastAPI(title=settings.app_name)
 
     app.add_exception_handler(RequestValidationError, validation_exception_handler)
     app.add_exception_handler(AppException, app_exception_handler)
@@ -33,15 +38,17 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
-    media_dir = Path(__file__).resolve().parent.parent / "media"
+    setup_middlewares(app)
+
+    media_dir = Path(settings.media_dir)
     media_dir.mkdir(parents=True, exist_ok=True)
     app.mount("/media", StaticFiles(directory=media_dir), name="media")
 
+    app.include_router(auth_router)
+    app.include_router(users_router)
     app.include_router(categories_router)
     app.include_router(posts_router)
     app.include_router(locations_router)
     app.include_router(comments_router)
-    app.include_router(auth_router)
-    app.include_router(users_router)
 
     return app
