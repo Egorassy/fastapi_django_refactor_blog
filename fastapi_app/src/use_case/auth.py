@@ -1,9 +1,10 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..core.exceptions.http import UnauthorizedError, ConflictError
-from ..core.security.password import verify_password, hash_password
+from ..core.exceptions.http import ConflictError, UnauthorizedError
 from ..core.security.jwt import create_access_token
+from ..core.security.password import verify_password, hash_password
 from ..infrastructure.repositories.users import UserRepository
+from ..infrastructure.module.exceptions import IntegrityDatabaseError
 
 
 class AuthUseCase:
@@ -18,16 +19,12 @@ class AuthUseCase:
 
         return create_access_token({"sub": str(user.id)})
 
-    async def register(self, db: AsyncSession, username: str, password: str):
-        existing = await self.repo.get_by_username(db, username)
-        if existing:
-            raise ConflictError("User already exists", code="user_conflict")
+    async def register(self, db: AsyncSession, data: dict):
+        try:
+            data = data.copy()
+            password = data.pop("password")
+            data["hashed_password"] = hash_password(password)
 
-        return await self.repo.create(
-            db,
-            {
-                "username": username,
-                "hashed_password": hash_password(password),
-                "is_active": True,
-            },
-        )
+            return await self.repo.create(db, data)
+        except IntegrityDatabaseError:
+            raise ConflictError("User already exists", code="user_conflict")

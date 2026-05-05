@@ -3,7 +3,8 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .dependencies import get_db
-from ..schemas.auth import Token, UserCreate
+from ..schemas.auth import Token
+from ..schemas.users import UserCreate
 from ..use_case.auth import AuthUseCase
 
 router = APIRouter(prefix="/auth")
@@ -24,9 +25,5 @@ async def register(
     data: UserCreate,
     db: AsyncSession = Depends(get_db),
 ):
-    user = await use_case.register(db, data.username, data.password)
-    return {
-        "id": user.id,
-        "username": user.username,
-        "is_active": user.is_active,
-    }
+    user = await use_case.register(db, data.model_dump())
+    return user

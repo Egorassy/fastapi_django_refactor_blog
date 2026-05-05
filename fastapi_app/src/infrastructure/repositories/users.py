@@ -34,3 +34,20 @@ class UserRepository:
         except SQLAlchemyError:
             await db.rollback()
             raise DatabaseError()
+
+    async def update(self, db: AsyncSession, user_id: int, data: dict):
+        obj = await self.get_by_id(db, user_id)
+
+        try:
+            for key, value in data.items():
+                setattr(obj, key, value)
+
+            await db.commit()
+            await db.refresh(obj)
+            return obj
+        except IntegrityError:
+            await db.rollback()
+            raise IntegrityDatabaseError()
+        except SQLAlchemyError:
+            await db.rollback()
+            raise DatabaseError()

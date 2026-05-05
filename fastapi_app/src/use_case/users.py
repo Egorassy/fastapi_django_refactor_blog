@@ -1,9 +1,9 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..infrastructure.repositories.users import UserRepository
+from ..core.exceptions.http import ConflictError, ForbiddenError, NotFoundError
 from ..core.security.password import hash_password
-from ..core.exceptions.http import ConflictError, NotFoundError
-from ..infrastructure.module.exceptions import NotFoundError as RepoNotFoundError
+from ..infrastructure.module.exceptions import NotFoundError as RepoNotFoundError, IntegrityDatabaseError
+from ..infrastructure.repositories.users import UserRepository
 
 
 class UserUseCase:
@@ -19,15 +19,21 @@ class UserUseCase:
         except RepoNotFoundError:
             raise NotFoundError(f"User {user_id} not found", code="user_not_found")
 
-    async def create(self, db: AsyncSession, username: str, password: str):
-        existing = await self.repo.get_by_username(db, username)
-        if existing:
+    async def create(self, db: AsyncSession, data: dict):
+        try:
+            data = data.copy()
+            data["hashed_password"] = hash_password(data.pop("password"))
+            return await self.repo.create(db, data)
+        except IntegrityDatabaseError:
             raise ConflictError("User already exists", code="user_conflict")
 
-        return await self.repo.create(
-            db,
-            {
-                "username": username,
-                "hashed_password": hash_password(password),
-            },
-        )
+    async def update_profile(self, db: AsyncSession, user_id: int, current_user_id: int, data: dict):
+        if user_id != current_user_id:
+            raise ForbiddenError("You are not the owner of this profile")
+
+        try:
+            return await self.repo.update(db, user_id, data)
+        except RepoNotFoundError:
+            raise NotFoundError(f"User {user_id} not found", code="user_not_found")
+        except IntegrityDatabaseError:
+            raise ConflictError("User profile already exists", code="user_conflict")

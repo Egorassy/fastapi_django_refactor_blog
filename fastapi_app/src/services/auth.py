@@ -1,39 +1,29 @@
-from datetime import datetime, timedelta
+from fastapi import APIRouter, Depends
+from fastapi.security import OAuth2PasswordRequestForm
+from sqlalchemy.ext.asyncio import AsyncSession
 
-import bcrypt
-from jose import jwt, JWTError
+from .dependencies import get_db
+from ..schemas.auth import Token
+from ..schemas.users import UserCreate, UserRead
+from ..use_case.auth import AuthUseCase
 
-from src.core.settings import settings
-
-
-def hash_password(password: str) -> str:
-    return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
-
-
-def verify_password(password: str, hashed: str) -> bool:
-    return bcrypt.checkpw(password.encode(), hashed.encode())
+router = APIRouter(prefix="/auth")
+use_case = AuthUseCase()
 
 
-def create_access_token(data: dict) -> str:
-    to_encode = data.copy()
-    expire = datetime.utcnow() + timedelta(
-        minutes=settings.access_token_expire_minutes
-    )
-    to_encode.update({"exp": expire})
-
-    return jwt.encode(
-        to_encode,
-        settings.secret_key,
-        algorithm=settings.algorithm,
-    )
+@router.post("/login", response_model=Token)
+async def login(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db: AsyncSession = Depends(get_db),
+):
+    token = await use_case.login(db, form_data.username, form_data.password)
+    return {"access_token": token, "token_type": "bearer"}
 
 
-def decode_token(token: str) -> dict | None:
-    try:
-        return jwt.decode(
-            token,
-            settings.secret_key,
-            algorithms=[settings.algorithm],
-        )
-    except JWTError:
-        return None
+@router.post("/register", response_model=UserRead)
+async def register(
+    data: UserCreate,
+    db: AsyncSession = Depends(get_db),
+):
+    user = await use_case.register(db, data.model_dump())
+    return user
