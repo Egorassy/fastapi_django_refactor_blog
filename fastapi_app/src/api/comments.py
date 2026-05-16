@@ -5,7 +5,7 @@ from ..schemas.comments import CommentCreate, CommentRead
 from .dependencies import get_db, get_current_user
 from ..use_case.comments import CommentUseCase
 
-router = APIRouter(prefix="/comments")
+router = APIRouter(prefix="/comments", tags=["Comments"])
 use_case = CommentUseCase()
 
 

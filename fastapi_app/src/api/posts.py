@@ -8,7 +8,7 @@ from .dependencies import get_db, get_current_user
 from ..use_case.posts import PostUseCase
 from ..infrastructure.module.files import save_post_image
 
-router = APIRouter(prefix="/posts")
+router = APIRouter(prefix="/posts", tags=["Posts"])
 use_case = PostUseCase()
 
 

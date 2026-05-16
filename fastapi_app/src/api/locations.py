@@ -5,7 +5,7 @@ from ..schemas.locations import LocationCreate, LocationRead
 from .dependencies import get_db, get_current_user
 from ..use_case.locations import LocationUseCase
 
-router = APIRouter(prefix="/locations")
+router = APIRouter(prefix="/locations", tags=["Locations"])
 use_case = LocationUseCase()
 
 

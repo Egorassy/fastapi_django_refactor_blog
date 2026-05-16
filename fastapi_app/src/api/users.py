@@ -5,7 +5,7 @@ from .dependencies import get_db, get_current_user
 from ..schemas.users import UserEdit, UserEditRead, UserRead
 from ..use_case.users import UserUseCase
 
-router = APIRouter(prefix="/users")
+router = APIRouter(prefix="/users", tags=["Users"])
 use_case = UserUseCase()
 
 

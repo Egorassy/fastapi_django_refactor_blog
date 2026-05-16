@@ -5,7 +5,7 @@ from ..schemas.categories import CategoryCreate, CategoryRead
 from .dependencies import get_db, get_current_user
 from ..use_case.categories import CategoryUseCase
 
-router = APIRouter(prefix="/categories")
+router = APIRouter(prefix="/categories", tags=["Categories"])
 use_case = CategoryUseCase()
 
 

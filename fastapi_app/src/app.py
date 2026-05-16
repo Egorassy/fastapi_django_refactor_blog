@@ -24,8 +24,16 @@ from .api.users import router as users_router
 
 def create_app() -> FastAPI:
     setup_logging()
+    tags_metadata = [
+        {"name": "Auth", "description": "Login, register, logout"},
+        {"name": "Users", "description": "User profiles"},
+        {"name": "Posts", "description": "Blog posts"},
+        {"name": "Categories", "description": "Post categories"},
+        {"name": "Locations", "description": "Post locations"},
+        {"name": "Comments", "description": "Post comments"},
+    ]
 
-    app = FastAPI(title=settings.app_name)
+    app = FastAPI(title=settings.app_name, openapi_tags=tags_metadata)
 
     app.add_exception_handler(RequestValidationError, validation_exception_handler)
     app.add_exception_handler(AppException, app_exception_handler)
@@ -37,6 +45,8 @@ def create_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+
 
     setup_middlewares(app)
 

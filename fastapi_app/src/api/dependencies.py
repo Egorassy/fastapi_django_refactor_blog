@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..core.exceptions.http import UnauthorizedError
 from ..core.security.jwt import decode_token
+from ..core.security.token_blacklist import is_token_revoked
 from ..infrastructure.module.db import AsyncSessionLocal
 from ..infrastructure.repositories.users import UserRepository
 
@@ -22,6 +23,9 @@ async def get_current_user(
     token: str = Depends(oauth2_scheme),
     db: AsyncSession = Depends(get_db),
 ):
+    if is_token_revoked(token):
+        raise UnauthorizedError("Token revoked")
+
     payload = decode_token(token)
 
     if not payload:
