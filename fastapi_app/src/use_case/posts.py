@@ -1,13 +1,14 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..infrastructure.repositories.posts import PostRepository
+from ..core.exceptions.http import ConflictError, ForbiddenError, NotFoundError
+from ..infrastructure.module.exceptions import (
+    IntegrityDatabaseError,
+    NotFoundError as RepoNotFoundError,
+)
+from ..infrastructure.module.files import delete_post_image
 from ..infrastructure.repositories.categories import CategoryRepository
 from ..infrastructure.repositories.locations import LocationRepository
-from ..infrastructure.module.exceptions import (
-    NotFoundError as RepoNotFoundError,
-    IntegrityDatabaseError,
-)
-from ..core.exceptions.http import NotFoundError, ConflictError, ForbiddenError
+from ..infrastructure.repositories.posts import PostRepository
 
 
 class PostUseCase:
@@ -44,7 +45,13 @@ class PostUseCase:
         if post.author_id != user_id:
             raise ForbiddenError("You are not the owner of this post")
 
-        return await self.repo.update(db, item_id, data)
+        old_image = post.image
+        updated_post = await self.repo.update(db, item_id, data)
+
+        if old_image and old_image != updated_post.image:
+            delete_post_image(old_image)
+
+        return updated_post
 
     async def delete(self, db: AsyncSession, item_id: int, user_id: int):
         try:
@@ -56,6 +63,7 @@ class PostUseCase:
             raise ForbiddenError("You are not the owner of this post")
 
         await self.repo.delete(db, item_id)
+        delete_post_image(post.image)
 
     async def _check_relations(self, db: AsyncSession, data: dict):
         location_id = data.get("location_id")
